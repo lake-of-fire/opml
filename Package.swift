@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.7
 import PackageDescription
 
 let package = Package(
@@ -15,7 +15,9 @@ let package = Package(
 		.package(name: "Html", url: "https://github.com/pointfreeco/swift-html", from: "0.4.1")
 	],
 	targets: [
-		.target(name: "OPML", dependencies: ["Html"]),
+		.target(name: "OPML", dependencies: [
+            .product(name: "Html", package: "swift-html"),
+        ]),
 		.testTarget(
 			name: "OPMLTests",
 			dependencies: ["OPML"],

@@ -1,13 +1,9 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.8
 import PackageDescription
 
 let package = Package(
 	name: "OPML",
-	platforms: [
-		.iOS(.v13),
-		.macOS(.v10_15),
-		.tvOS(.v13),
-	],
+    platforms: [.iOS(.v15), .macOS(.v12)],
 	products: [
 		.library(name: "OPML", targets: ["OPML"])
 	],

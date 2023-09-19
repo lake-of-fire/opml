@@ -10,8 +10,8 @@ public struct OPMLFile: FileDocument {
     public var text = ""
 
     // a simple initializer that creates new, empty documents
-    public init(initialText: String = "") {
-        text = initialText
+    public init(opml: OPML) {
+        text = opml.xml
     }
 
     // this initializer loads data that has been saved previously

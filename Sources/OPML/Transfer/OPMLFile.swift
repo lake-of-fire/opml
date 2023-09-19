@@ -6,12 +6,15 @@ public struct OPMLFile: FileDocument {
     // tell the system we support only plain text
     public static var readableContentTypes = [UTType(exportedAs: "public.opml"), UTType.plainText]
 
+    public var title = ""
+    
     // by default our document is empty
     public var text = ""
 
     // a simple initializer that creates new, empty documents
     public init(opml: OPML) {
         text = opml.xml
+        title = opml.title ?? ""
     }
 
     // this initializer loads data that has been saved previously

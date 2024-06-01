@@ -1,37 +1,43 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+enum TransferError: Error {
+    case importFailed
+}
+
 @available(iOS 16.0, macOS 13.0, *)
 extension OPML: Transferable {
     public static var transferRepresentation: some TransferRepresentation {
         FileRepresentation(contentType: .fileURL,
-                           shouldAttemptToOpenInPlace: false // url is temporary
-        ) { opml in
+                           shouldAttemptToOpenInPlace: false) { opml in
             let resultURL = FileManager.default.temporaryDirectory
-                .appending(component: opml.title ?? UUID().uuidString, directoryHint: .notDirectory)
+                .appendingPathComponent(opml.title ?? UUID().uuidString)
                 .appendingPathExtension("opml")
-            if FileManager.default.fileExists(atPath: resultURL.path(percentEncoded: false)) {
+            if FileManager.default.fileExists(atPath: resultURL.path) {
                 try FileManager.default.removeItem(at: resultURL)
             }
             let data = opml.xml.data(using: .utf8) ?? Data()
             try data.write(to: resultURL, options: [.atomic])
-            let sentTransferredFile: SentTransferredFile = .init(resultURL, allowAccessingOriginalFile: true)
-            return sentTransferredFile
+            return SentTransferredFile(resultURL, allowAccessingOriginalFile: true)
         } importing: { opmlFile in
-            let data: Data = try .init(
-                contentsOf: opmlFile.file,
-                options: [.uncached]
-            )
+            let data = try Data(contentsOf: opmlFile.file, options: [.uncached])
             return (try? OPML(data)) ?? OPML(entries: [])
         }
         
-        DataRepresentation(contentType: .text) { opml in
+        DataRepresentation(contentType: .opml) { opml in
             opml.xml.data(using: .utf8) ?? Data()
-        } importing: { return (try? OPML($0)) ?? OPML(entries: []) }
-            .suggestedFileName("ChatOnMac-Packages.opml")
-        //        DataRepresentation(contentType: UTType(exportedAs: "public.opml")) { opml in
-        //            opml.xml(indented: true).data(using: .utf8) ?? Data()
-        //        } importing: { return (try? OPML($0)) ?? OPML(entries: []) }
-//        .suggestedFileName("ManabiReaderUserFeeds.opml")
+        } importing: { data in
+            return (try? OPML(data)) ?? OPML(entries: [])
+        }
+        
+        DataRepresentation(contentType: .utf8PlainText) { opml in
+            opml.xml.data(using: .utf8) ?? Data()
+        } importing: { data in
+            return (try? OPML(data)) ?? OPML(entries: [])
+        }
     }
+}
+
+extension UTType {
+    static let opml = UTType(exportedAs: "public.opml", conformingTo: .xml)
 }

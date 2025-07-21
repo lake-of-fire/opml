@@ -13,7 +13,7 @@ let package = Package(
 	targets: [
 		.target(name: "OPML", dependencies: [
             .product(name: "Html", package: "swift-html"),
-        ])/*,
+        ]),
 		.testTarget(
 			name: "OPMLTests",
 			dependencies: ["OPML"],

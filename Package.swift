@@ -1,9 +1,13 @@
-// swift-tools-version:5.8
+// swift-tools-version:5.5
 import PackageDescription
 
 let package = Package(
 	name: "OPML",
-    platforms: [.iOS(.v15), .macOS(.v12)],
+	platforms: [
+		.iOS(.v13),
+		.macOS(.v10_15),
+		.tvOS(.v13),
+	],
 	products: [
 		.library(name: "OPML", targets: ["OPML"])
 	],
@@ -11,9 +15,7 @@ let package = Package(
 		.package(name: "Html", url: "https://github.com/pointfreeco/swift-html", from: "0.4.1")
 	],
 	targets: [
-		.target(name: "OPML", dependencies: [
-            .product(name: "Html", package: "swift-html"),
-        ]),
+		.target(name: "OPML", dependencies: ["Html"]),
 		.testTarget(
 			name: "OPMLTests",
 			dependencies: ["OPML"],

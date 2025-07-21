@@ -69,3 +69,9 @@ extension OPMLEntry {
 		.outline(attributes: htmlAttributes, children?.map { $0.node } ?? [])
 	}
 }
+
+public extension OPMLEntry {
+	var xml: String {
+		render(node)
+	}
+}
